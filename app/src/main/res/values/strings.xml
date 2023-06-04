@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Music Player</string>
+    <string name="music_note_icon">Music Note Icon</string>
+    <string name="song">Song</string>
+    <string name="Album">Album</string>
+    <string name="song_name">Song Name</string>
+    <string name="song_artist">Song Artist</string>
+    <string name="more_content_description">See more information about the song</string>
+</resources>
