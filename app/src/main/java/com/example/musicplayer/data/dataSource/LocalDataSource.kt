@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
 import android.util.Log
+import android.util.Size
 import androidx.annotation.WorkerThread
 import com.example.musicplayer.data.model.Album
 import com.example.musicplayer.data.model.Audio
@@ -46,7 +47,7 @@ class LocalDataSource(private val context: Context) {
         albumNameColumn,
         albumArtistColumn,
         albumIDColumn,
-        totalSongsForAlbum
+        totalSongsForAlbum,
     )
 
     private var selectionClause: String = "${MediaStore.Audio.AudioColumns.IS_MUSIC} = ?"
@@ -96,12 +97,15 @@ class LocalDataSource(private val context: Context) {
                         val data = getString(dataColumn)
                         val title = getString(titleColumn)
                         val artist = getString(artistColum)
+
                         val uri = ContentUris.withAppendedId(
                             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                             id
                         )
 
-                        audioList += Audio(uri, title, artist, duration, album, data, displayName)
+                        val coverArt = context.contentResolver.loadThumbnail(uri, Size(640, 480), null)
+
+                        audioList += Audio(uri, title, artist, duration, album, data, displayName, coverArt)
                     }
                 }
             }
@@ -138,6 +142,8 @@ class LocalDataSource(private val context: Context) {
                             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                             albumID
                         )
+
+                        context.contentResolver.loadThumbnail(albumUri, Size(640, 480), null )
 
                         albumList += Album(albumID, albumName, albumArtist, numOfSongs, albumUri)
                     }
