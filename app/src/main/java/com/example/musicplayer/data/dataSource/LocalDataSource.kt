@@ -3,9 +3,11 @@ package com.example.musicplayer.data.dataSource
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
+import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import android.util.Size
+import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import com.example.musicplayer.data.model.Album
 import com.example.musicplayer.data.model.Audio
@@ -56,16 +58,19 @@ class LocalDataSource(private val context: Context) {
 
     private val sortOrder = "${MediaStore.Audio.AudioColumns.DISPLAY_NAME} ASC"
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     @WorkerThread
     fun getAudio(): List<Audio> {
         return getSongsData()
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     @WorkerThread
     fun getAlbums(): List<Album> {
         return getAlbumsData()
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun getSongsData(): MutableList<Audio> {
         val audioList = mutableListOf<Audio>()
         cursor = context.contentResolver.query(
@@ -105,7 +110,7 @@ class LocalDataSource(private val context: Context) {
 
                         val coverArt = context.contentResolver.loadThumbnail(uri, Size(640, 480), null)
 
-                        audioList += Audio(uri, title, artist, duration, album, data, displayName, coverArt)
+                        audioList += Audio(id,uri, title, artist, duration, album, data, displayName, coverArt)
                     }
                 }
             }
@@ -113,6 +118,7 @@ class LocalDataSource(private val context: Context) {
         return audioList
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun getAlbumsData(): MutableList<Album> {
         val albumList = mutableListOf<Album>()
         cursor = context.contentResolver.query(
