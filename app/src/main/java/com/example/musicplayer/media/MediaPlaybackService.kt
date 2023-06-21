@@ -15,17 +15,32 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.RequiresApi
 import androidx.media.MediaBrowserServiceCompat
+import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.musicplayer.data.model.Audio
 import com.example.musicplayer.data.repositories.LocalDataSourceRepository
+import com.example.musicplayer.media.exoplayer.MediaSource
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import androidx.media3.common.MediaItem as ExoplayerMediaItem
 
 
 private const val MY_MEDIA_ROOT_ID = "media_root_id"
 private const val TAG = "MediaPlaybackService"
+private const val notificationId = 1
 
+@AndroidEntryPoint
 class MediaPlaybackService(private val localDataSourceRepository: LocalDataSourceRepository) :
     MediaBrowserServiceCompat() {
+
+    @Inject
+    lateinit var dataSourceFactory: CacheDataSource.Factory
+
+    @Inject
+    lateinit var exoPlayer: ExoPlayer
+
+    @Inject
+    lateinit var mediaSource: MediaSource
 
     var mediaSession: MediaSessionCompat? = null
     private var player: ExoPlayer? = null
@@ -62,7 +77,7 @@ class MediaPlaybackService(private val localDataSourceRepository: LocalDataSourc
                 // Register BECOME_NOISY BroadcastReceiver
                 registerReceiver(myNoisyAudioStreamReceiver, intentFilter)
                 // Put the service in the foreground, post notification
-                startForeground(id, myPlayerNotification)
+                startForeground(notificationId, builder)
             }
 
         }

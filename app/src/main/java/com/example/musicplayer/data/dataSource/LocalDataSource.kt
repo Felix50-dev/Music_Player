@@ -11,10 +11,12 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import com.example.musicplayer.data.model.Album
 import com.example.musicplayer.data.model.Audio
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
 private const val TAG = "LocalDataSource"
 
-class LocalDataSource(private val context: Context) {
+class LocalDataSource @Inject constructor(@ApplicationContext private val context: Context) {
 
 
     private var cursor: Cursor? = null
