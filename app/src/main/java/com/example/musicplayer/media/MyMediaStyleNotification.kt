@@ -1,77 +1,66 @@
 package com.example.musicplayer.media
 
+import android.app.PendingIntent
 import android.content.Context
+import android.graphics.Bitmap
+import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
-import androidx.core.content.ContextCompat
-import androidx.media.app.NotificationCompat
-import androidx.media.session.MediaButtonReceiver
+import androidx.media3.common.Player
+import androidx.media3.ui.PlayerNotificationManager
+import androidx.media3.ui.PlayerNotificationManager.NotificationListener
 import com.example.musicplayer.R
-import androidx.core.app.NotificationCompat as NotificationCompat1
 
 private const val channelId = "CHANNEL_ID"
 
-class MyMediaStyleNotification(mediaSession: MediaSessionCompat?, context: Context) {
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 
-    private val controller = mediaSession?.controller
-    private val mediaMetadata = controller?.metadata
-    private val description = mediaMetadata?.description
+internal class MyMediaStyleNotification(sessionToken: MediaSessionCompat.Token, notificationListener: NotificationListener, context: Context) {
 
+    private val notificationManager: PlayerNotificationManager
 
-
-    val builder = NotificationCompat1.Builder(context, channelId).apply {
-        // Add the metadata for the currently playing track
-        setContentTitle(description?.title)
-        setContentText(description?.subtitle)
-        setSubText(description?.description)
-        setLargeIcon(description?.iconBitmap)
-
-        // Enable launching the player by clicking the notification
-        setContentIntent(controller?.sessionActivity)
-
-        // Stop the service when the notification is swiped away
-        setDeleteIntent(
-            MediaButtonReceiver.buildMediaButtonPendingIntent(
-                context,
-                PlaybackStateCompat.ACTION_STOP
-            )
+    init {
+        val mediaController = MediaControllerCompat(context, sessionToken)
+        val builder = PlayerNotificationManager.Builder(
+            context,
+            notificationId,
+            channelId
         )
 
-        // Make the transport controls visible on the lockscreen
-        setVisibility(NotificationCompat1.VISIBILITY_PUBLIC)
-
-        // Add an app icon and set its accent color
-        // Be careful about the color
-        setSmallIcon(R.drawable.ic_player_notification)
-        color = ContextCompat.getColor(context, R.color.purple_500)
-
-        // Add a pause button
-        addAction(
-            NotificationCompat1.Action(
-                R.drawable.ic_pause,
-                context.getString(R.string.pause),
-                MediaButtonReceiver.buildMediaButtonPendingIntent(
-                    context,
-                    PlaybackStateCompat.ACTION_PLAY_PAUSE
-                )
-            )
-        )
-
-        // Take advantage of MediaStyle features
-        if (mediaSession != null) {
-            setStyle(NotificationCompat.MediaStyle()
-                .setMediaSession(mediaSession.sessionToken)
-                .setShowActionsInCompactView(0)
-
-                // Add a cancel button
-                .setShowCancelButton(true)
-                .setCancelButtonIntent(
-                    MediaButtonReceiver.buildMediaButtonPendingIntent(
-                        context,
-                        PlaybackStateCompat.ACTION_STOP
-                    )
-                )
-            )
+        with(builder) {
+            setMediaDescriptionAdapter(DescriptionAdapter(mediaController))
+            setNotificationListener(notificationListener)
+            setChannelNameResourceId(R.string.notification_channel)
+            setChannelDescriptionResourceId(R.string.notification_channel_description)
         }
+
+        notificationManager = builder.build()
+
+        with(notificationManager) {
+            setMediaSessionToken(sessionToken)
+            setSmallIcon(R.drawable.ic_music_note)
+            setUseFastForwardAction(true)
+            setUseRewindAction(true)
+        }
+
     }
+
+    private fun showNotification(player: Player) {
+        notificationManager.setPlayer(player)
+    }
+
+
+
+    inner class DescriptionAdapter(private val controller: MediaControllerCompat): PlayerNotificationManager.MediaDescriptionAdapter {
+        override fun getCurrentContentTitle(player: Player): CharSequence = controller.metadata.description.title.toString()
+        override fun createCurrentContentIntent(player: Player): PendingIntent? = controller.sessionActivity
+
+        override fun getCurrentContentText(player: Player): CharSequence? = controller.metadata.description.subtitle
+
+        override fun getCurrentLargeIcon(
+            player: Player,
+            callback: PlayerNotificationManager.BitmapCallback
+        ): Bitmap? = controller.metadata.description.iconBitmap
+
+    }
+
 }

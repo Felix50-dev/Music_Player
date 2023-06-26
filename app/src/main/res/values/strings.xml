@@ -8,4 +8,6 @@
     <string name="more_content_description">See more information about the song</string>
     <string name="service_name">MediaPlaybackService</string>
     <string name="pause">pause</string>
+    <string name="notification_channel">Notification Channel</string>
+    <string name="notification_channel_description">Notification Channel Description</string>
 </resources>

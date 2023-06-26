@@ -78,10 +78,14 @@ dependencies {
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
-    //Exoplayer
+    //Exoplayer and media3
     implementation "androidx.media3:media3-exoplayer:1.0.2"
     implementation "androidx.media3:media3-exoplayer-dash:1.0.2"
     implementation "androidx.media3:media3-ui:1.0.2"
+    implementation "androidx.media3:media3-session:1.0.2"
+    //media2 for session connector
+    implementation 'com.google.android.exoplayer:exoplayer-media-session:2.0.5'
+    implementation 'com.google.android.exoplayer:extension-mediasession:2.18.7'
 
 }
 
