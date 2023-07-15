@@ -14,7 +14,7 @@ private const val channelId = "CHANNEL_ID"
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 
-internal class MyMediaStyleNotification(sessionToken: MediaSessionCompat.Token, notificationListener: NotificationListener, context: Context) {
+internal class MyMediaStyleNotification(context: Context,sessionToken: MediaSessionCompat.Token, notificationListener: NotificationListener) {
 
     private val notificationManager: PlayerNotificationManager
 
@@ -46,6 +46,10 @@ internal class MyMediaStyleNotification(sessionToken: MediaSessionCompat.Token, 
 
     private fun showNotification(player: Player) {
         notificationManager.setPlayer(player)
+    }
+
+    private fun hideNotification() {
+        notificationManager.setPlayer(null)
     }
 
 
