@@ -10,4 +10,6 @@
     <string name="pause">pause</string>
     <string name="notification_channel">Notification Channel</string>
     <string name="notification_channel_description">Notification Channel Description</string>
+    <string name="generic_error">error playing media</string>
+    <string name="error_media_not_found">media not found</string>
 </resources>

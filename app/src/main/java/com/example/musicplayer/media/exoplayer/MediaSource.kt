@@ -7,11 +7,11 @@ import android.os.Build
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
-import androidx.media3.common.MediaItem
+import com.google.android.exoplayer2.MediaItem
 import androidx.annotation.RequiresApi
-import androidx.media3.datasource.cache.CacheDataSource
-import androidx.media3.exoplayer.source.ConcatenatingMediaSource
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.ConcatenatingMediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.example.musicplayer.data.repositories.LocalDataSourceRepository
 import javax.inject.Inject
 
@@ -95,6 +95,11 @@ class MediaSource
 
         MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
     }.toMutableList()
+
+    fun refresh() {
+        onReadyListeners.clear()
+        state = AudioSourceState.STATE_CREATED
+    }
 
 }
 

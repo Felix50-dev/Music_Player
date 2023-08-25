@@ -11,21 +11,25 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.cache.CacheDataSource
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerNotificationManager
+import com.google.android.exoplayer2.upstream.cache.CacheDataSource
+import com.google.android.exoplayer2.ui.PlayerNotificationManager
+import com.example.musicplayer.R
+import com.example.musicplayer.constants.K
 import com.example.musicplayer.data.repositories.LocalDataSourceRepository
 import com.example.musicplayer.media.exoplayer.MediaSource
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.PlaybackException
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
+import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 
@@ -73,13 +77,13 @@ class MediaPlaybackService @Inject constructor(private val localDataSourceReposi
         //not sure how this is helpful
         val sessionActivityIntent =
             packageManager?.getLaunchIntentForPackage(packageName)?.let { sessionIntent ->
-                    PendingIntent.getActivity(
-                        this,
-                        0,
-                        sessionIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                    )
-                }
+                PendingIntent.getActivity(
+                    this,
+                    0,
+                    sessionIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+            }
 
         mediaSession = MediaSessionCompat(this, TAG).apply {
             setSessionActivity(sessionActivityIntent)
@@ -87,7 +91,8 @@ class MediaPlaybackService @Inject constructor(private val localDataSourceReposi
         }
         val sessionToken = mediaSession.sessionToken
         mediaPlayerNotification =
-            MyMediaStyleNotification(this,
+            MyMediaStyleNotification(
+                this,
                 sessionToken,
                 NotificationListener()
             )
@@ -96,9 +101,11 @@ class MediaPlaybackService @Inject constructor(private val localDataSourceReposi
             mediaSource.load()
         }
         mediaSessionConnector = MediaSessionConnector(mediaSession).apply {
-            setPlaybackPreparer()
-            setQueueNavigator()
+            setPlaybackPreparer(AudioMediaPlaybackPreparer())
+            setQueueNavigator(MediaQueueNavigator(mediaSession))
+            setPlayer(exoPlayer)
         }
+        mediaPlayerNotification.showNotification(exoPlayer)
     }
 
 
@@ -112,22 +119,34 @@ class MediaPlaybackService @Inject constructor(private val localDataSourceReposi
     override fun onLoadChildren(
         parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
-        val audioFiles = localDataSourceRepository.getSongs()
-        val mediaItems = mutableListOf<MediaBrowserCompat.MediaItem>()
+        when (parentId) {
+            MY_MEDIA_ROOT_ID -> {
+                val resultsSent = mediaSource.whenReady { isInitialized ->
 
-        audioFiles.map { song ->
+                    if (isInitialized) {
+                        result.sendResult(mediaSource.asMediaItem())
+                    } else {
+                        result.sendResult(null)
+                    }
 
-            val description =
-                MediaDescriptionCompat.Builder().setTitle(song.title).setMediaUri(song.uri)
-                    .setIconUri(song.uri).setSubtitle(song.displayName).build()
+                }
+                if (!resultsSent) result.detach()
+            }
 
-            val mediaItem: MediaBrowserCompat.MediaItem = MediaBrowserCompat.MediaItem(
-                description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
-            )
-
-            mediaItems.add(mediaItem)
+            else -> Unit
         }
-        result.sendResult(mediaItems)
+    }
+
+    inner class MediaQueueNavigator(mediaSessionCompat: MediaSessionCompat) :
+        TimelineQueueNavigator(mediaSessionCompat) {
+        override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
+            if (windowIndex < mediaSource.audioMediaMetadata.size) {
+                return mediaSource.audioMediaMetadata[windowIndex].description
+            }
+
+            return MediaDescriptionCompat.Builder().build()
+        }
+
     }
 
     @UnstableApi
@@ -152,38 +171,127 @@ class MediaPlaybackService @Inject constructor(private val localDataSourceReposi
         }
     }
 
-    inner class AudioMediaPlaybackPreparer: MediaSessionConnector.PlaybackPreparer{
+    override fun onCustomAction(
+        action: String,
+        extras: Bundle?,
+        result: Result<Bundle>
+    ) {
+        when (action) {
+
+            K.START_MEDIA_PLAY_ACTION -> {
+                mediaPlayerNotification.showNotification(exoPlayer)
+            }
+            K.REFRESH_MEDIA_PLAY_ACTION -> {
+                mediaSource.refresh()
+                notifyChildrenChanged(MY_MEDIA_ROOT_ID)
+            }
+
+            else -> Unit
+
+
+        }
+
+
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        exoPlayer.stop()
+        exoPlayer.clearMediaItems()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        serviceScope.cancel()
+        exoPlayer.release()
+    }
+
+    inner class AudioMediaPlaybackPreparer : MediaSessionConnector.PlaybackPreparer {
         override fun onCommand(
-            player: com.google.android.exoplayer2.Player?,
-            command: String?,
+            player: Player,
+            command: String,
             extras: Bundle?,
             cb: ResultReceiver?
         ): Boolean {
-            TODO("Not yet implemented")
+            return false
         }
 
-        override fun getSupportedPrepareActions(): Long {
-            TODO("Not yet implemented")
-        }
+        override fun getSupportedPrepareActions(): Long =
+            PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID
 
-        override fun onPrepare(playWhenReady: Boolean) {
-            TODO("Not yet implemented")
-        }
+        override fun onPrepare(playWhenReady: Boolean) = Unit
 
         override fun onPrepareFromMediaId(
-            mediaId: String?,
+            mediaId: String,
             playWhenReady: Boolean,
             extras: Bundle?
         ) {
-            TODO("Not yet implemented")
+            mediaSource.whenReady {
+                val itemToPlay = mediaSource.audioMediaMetadata.find {
+                    it.description.mediaId == mediaId
+                }
+
+                currentlyPlayingMedia = itemToPlay
+
+                if (itemToPlay != null) {
+                    preparePlayer(
+                        mediaMetadata = mediaSource.audioMediaMetadata,
+                        itemToPlay = itemToPlay,
+                        playWhenReady = playWhenReady
+                    )
+                }
+
+            }
         }
 
-        override fun onPrepareFromSearch(query: String?, playWhenReady: Boolean, extras: Bundle?) {
-            TODO("Not yet implemented")
+        override fun onPrepareFromSearch(query: String, playWhenReady: Boolean, extras: Bundle?) =
+            Unit
+
+        override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) = Unit
+
+        private fun preparePlayer(
+            mediaMetadata: List<MediaMetadataCompat>,
+            itemToPlay: MediaMetadataCompat,
+            playWhenReady: Boolean
+        ) {
+            val indexToPlay = if (currentlyPlayingMedia == null) 0
+            else mediaMetadata.indexOf(itemToPlay)
+
+            exoPlayer.addListener(PlayerEventListener())
+            exoPlayer.setMediaSource(mediaSource.asMediaSource(dataSourceFactory))
+            exoPlayer.prepare()
+            exoPlayer.seekTo(indexToPlay, 0)
+            exoPlayer.playWhenReady = playWhenReady
+
+        }
+    }
+
+    private inner class PlayerEventListener : Player.Listener {
+
+        override fun onPlaybackStateChanged(playbackState: Int) {
+            when (playbackState) {
+                Player.STATE_BUFFERING,
+                Player.STATE_READY -> {
+                    mediaPlayerNotification.showNotification(exoPlayer)
+                }
+                else -> {
+                    mediaPlayerNotification.hideNotification()
+                }
+            }
         }
 
-        override fun onPrepareFromUri(uri: Uri?, playWhenReady: Boolean, extras: Bundle?) {
-            TODO("Not yet implemented")
+        override fun onEvents(player: Player, events: Player.Events) {
+            super.onEvents(player, events)
+            currentDuration = player.duration
+        }
+
+        override fun onPlayerError(error: PlaybackException) {
+            var message = R.string.generic_error
+            if (error.errorCode == PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND) {
+                message = R.string.error_media_not_found
+            }
+
+            Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
         }
 
     }

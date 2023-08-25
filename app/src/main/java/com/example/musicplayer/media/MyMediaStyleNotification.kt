@@ -5,16 +5,15 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
-import androidx.media3.common.Player
-import androidx.media3.ui.PlayerNotificationManager
-import androidx.media3.ui.PlayerNotificationManager.NotificationListener
 import com.example.musicplayer.R
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.ui.PlayerNotificationManager
 
 private const val channelId = "CHANNEL_ID"
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 
-internal class MyMediaStyleNotification(context: Context,sessionToken: MediaSessionCompat.Token, notificationListener: NotificationListener) {
+internal class MyMediaStyleNotification(context: Context,sessionToken: MediaSessionCompat.Token, notificationListener: PlayerNotificationManager.NotificationListener) {
 
     private val notificationManager: PlayerNotificationManager
 
@@ -44,11 +43,11 @@ internal class MyMediaStyleNotification(context: Context,sessionToken: MediaSess
 
     }
 
-    private fun showNotification(player: Player) {
+    fun showNotification(player: Player) {
         notificationManager.setPlayer(player)
     }
 
-    private fun hideNotification() {
+    public fun hideNotification() {
         notificationManager.setPlayer(null)
     }
 

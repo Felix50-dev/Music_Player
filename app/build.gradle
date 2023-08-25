@@ -73,6 +73,9 @@ dependencies {
     implementation "com.google.dagger:hilt-android:2.44.2"
     kapt "com.google.dagger:hilt-compiler:2.44.2"
 
+    //depreciated but we will use it before migrating to media3
+    implementation "com.google.android.exoplayer:exoplayer:2.19.0"
+
     //navigation
     def nav_version = "2.5.3"
 
