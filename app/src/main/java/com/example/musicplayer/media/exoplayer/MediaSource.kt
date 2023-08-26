@@ -1,18 +1,15 @@
 package com.example.musicplayer.media.exoplayer
 
-import android.media.MediaDescription
-import android.media.browse.MediaBrowser
-import android.media.browse.MediaBrowser.MediaItem.FLAG_PLAYABLE
 import android.os.Build
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
-import com.google.android.exoplayer2.MediaItem
 import androidx.annotation.RequiresApi
+import com.example.musicplayer.data.repositories.LocalDataSourceRepository
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
-import com.example.musicplayer.data.repositories.LocalDataSourceRepository
 import javax.inject.Inject
 
 class MediaSource
