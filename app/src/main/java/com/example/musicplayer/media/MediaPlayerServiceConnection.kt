@@ -38,7 +38,7 @@ class MediaPlayerServiceConnection @Inject constructor(@ApplicationContext conte
     val mediaRootId: String
     get() = mediaBrowser.root
 
-    private val transportControls: MediaControllerCompat.TransportControls
+    val transportControls: MediaControllerCompat.TransportControls
     get() = mediaControllerCompat.transportControls
 
     fun playAudio(audios: List<Audio>) {

@@ -33,7 +33,7 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 
-private const val MY_MEDIA_ROOT_ID = "media_root_id"
+const val MY_MEDIA_ROOT_ID = "media_root_id"
 private const val TAG = "MediaPlaybackService"
 const val notificationId = 1
 
@@ -117,7 +117,8 @@ class MediaPlaybackService @Inject constructor(private val localDataSourceReposi
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onLoadChildren(
-        parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>
+        parentId: String,
+        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
         when (parentId) {
             MY_MEDIA_ROOT_ID -> {
