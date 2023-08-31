@@ -13,8 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.musicplayer.data.model.Album
-import com.example.musicplayer.data.model.albums
+import com.example.musicplayer.R
+import com.example.musicplayer.data.model.Song
+import com.example.musicplayer.data.model.songs
 
 @Composable
 fun AlbumsScreen() {
@@ -23,14 +24,14 @@ fun AlbumsScreen() {
             .padding(8.dp)
             .background(MaterialTheme.colors.background)
     ) {
-        items(albums) {
-            AlbumItem(album = it)
+        items(songs) {
+            AlbumItem(song = it)
         }
     }
 }
 
 @Composable
-fun AlbumItem(album: Album, modifier: Modifier = Modifier) {
+fun AlbumItem(song: Song, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.padding(8.dp),
         elevation = 4.dp
@@ -40,8 +41,8 @@ fun AlbumItem(album: Album, modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            SongIcon(album.songIcon)
-            SongInformation(album.name, album.artist)
+            SongIcon(song.songIcon)
+            SongInformation(song.name, song.artist)
             Spacer(modifier = Modifier.weight(1f))
             MoreIcon()
         }

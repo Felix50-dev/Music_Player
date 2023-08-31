@@ -4,6 +4,7 @@
     <string name="song">Song</string>
     <string name="Album">Album</string>
     <string name="song_name">Song Name</string>
+    <string name="album_name">Album Name</string>
     <string name="song_artist">Song Artist</string>
     <string name="more_content_description">See more information about the song</string>
     <string name="service_name">MediaPlaybackService</string>

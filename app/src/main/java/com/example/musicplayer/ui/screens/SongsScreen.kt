@@ -15,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -22,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.musicplayer.R
 import com.example.musicplayer.data.model.Song
 import com.example.musicplayer.data.model.songs
@@ -49,7 +51,8 @@ fun SongItem(song: Song, modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             SongIcon(song.songIcon)
             SongInformation(song.name, song.artist)
@@ -61,13 +64,10 @@ fun SongItem(song: Song, modifier: Modifier = Modifier) {
 
 @Composable
 fun SongIcon(@DrawableRes songIcon: Int, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
+
         Image(
             modifier = modifier
-                .size(20.dp)
+                .size(64.dp)
                 .clip(RoundedCornerShape(50))
                 .padding(8.dp),
             contentScale = ContentScale.Crop,
@@ -78,8 +78,6 @@ fun SongIcon(@DrawableRes songIcon: Int, modifier: Modifier = Modifier) {
          */
             contentDescription = null
         )
-
-    }
 }
 
 @Composable
@@ -92,11 +90,14 @@ fun SongInformation(
         Text(
             text = stringResource(id = songName),
             style = MaterialTheme.typography.h2,
-            modifier = modifier.padding(top = 8.dp)
+            fontSize = 24.sp,
+            modifier = modifier.padding(top = 10.dp)
         )
         Text(
             text = stringResource(id = songArtist),
             style = MaterialTheme.typography.h2,
+            fontSize = 24.sp,
+            modifier = modifier.padding(top = 8.dp)
         )
     }
 }
@@ -114,4 +115,10 @@ fun MoreIcon() {
 @Preview
 fun SongsScreenPreview() {
     SongsScreen()
+}
+
+@Composable
+@Preview
+fun SongItemPreview() {
+    SongItem(song = Song(R.drawable.ic_music_note, R.string.song_name, R.string.song_artist))
 }
