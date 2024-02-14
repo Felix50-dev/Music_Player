@@ -47,7 +47,7 @@ internal class MyMediaStyleNotification(context: Context,sessionToken: MediaSess
         notificationManager.setPlayer(player)
     }
 
-    public fun hideNotification() {
+    fun hideNotification() {
         notificationManager.setPlayer(null)
     }
 

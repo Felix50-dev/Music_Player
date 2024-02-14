@@ -5,18 +5,18 @@ import androidx.annotation.RequiresApi
 import com.example.musicplayer.data.dataSource.LocalDataSource
 import com.example.musicplayer.data.model.Album
 import com.example.musicplayer.data.model.Audio
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class LocalDataSourceRepository(private val localDataSource: LocalDataSource) {
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    fun getSongs(): List<Audio> {
-        return localDataSource.getAudio()
+    suspend fun getSongs(): List<Audio> = withContext(Dispatchers.IO) {
+        localDataSource.getAudio()
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    fun getAlbums(): List<Album> {
-        return localDataSource.getAlbums()
+    suspend fun getAlbums(): List<Album> = withContext(Dispatchers.IO) {
+        localDataSource.getAlbums()
     }
-
-
 }

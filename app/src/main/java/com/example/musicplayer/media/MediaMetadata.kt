@@ -1,9 +1,12 @@
 package com.example.musicplayer.media
 
+import android.os.Build
 import android.support.v4.media.MediaMetadataCompat
+import androidx.annotation.RequiresApi
 import com.example.musicplayer.data.repositories.LocalDataSourceRepository
 
-fun getMediaMetadata(localDataSourceRepository: LocalDataSourceRepository): MediaMetadataCompat {
+@RequiresApi(Build.VERSION_CODES.Q)
+suspend fun getMediaMetadata(localDataSourceRepository: LocalDataSourceRepository): MediaMetadataCompat {
 
     lateinit var mediaMetadata: MediaMetadataCompat
 

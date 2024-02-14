@@ -5,4 +5,9 @@ object K {
     const val START_MEDIA_PLAY_ACTION = "START_MEDIA_PLAY_ACTION"
     const val REFRESH_MEDIA_PLAY_ACTION = "REFRESH_MEDIA_PLAY_ACTION "
     const val PLAYBACK_UPDATE_INTERVAL = 1000L
+
+    //notification
+    const val NOTIFICATION_ID = 254
+    const val NOTIFICATION_CHANNEL_NAME = "notification channel"
+    const val NOTIFICATION_CHANNEL_ID = "notification channel id "
 }

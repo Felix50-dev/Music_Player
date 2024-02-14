@@ -70,7 +70,7 @@ class AudioViewModel @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun getAndFormatAudioData(): List<Audio> {
+    private suspend fun getAndFormatAudioData(): List<Audio> {
         return repository.getSongs().map {
             val displayName = it.displayName.substringBefore(".")
             val artist = if (it.artist.contains("<unknown>"))

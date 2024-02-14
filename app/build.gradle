@@ -89,6 +89,8 @@ dependencies {
     //media2 for session connector
     implementation 'com.google.android.exoplayer:extension-mediasession:2.19.1'
 
+    //fix duplicate class found error
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
 }
 
 // Allow references to generated code
