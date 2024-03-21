@@ -1,16 +1,4 @@
 <resources>
-    <string name="app_name">Music Player</string>
-    <string name="music_note_icon">Music Note Icon</string>
-    <string name="song">Song</string>
-    <string name="Album">Album</string>
-    <string name="song_name">Song Name</string>
-    <string name="album_name">Album Name</string>
-    <string name="song_artist">Song Artist</string>
-    <string name="more_content_description">See more information about the song</string>
-    <string name="service_name">MediaPlaybackService</string>
-    <string name="pause">pause</string>
-    <string name="notification_channel">Notification Channel</string>
-    <string name="notification_channel_description">Notification Channel Description</string>
-    <string name="generic_error">error playing media</string>
-    <string name="error_media_not_found">media not found</string>
+    <string name="app_name">Root Audio</string>
+    <string name="back_button">Back Button</string>
 </resources>

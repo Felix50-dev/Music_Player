@@ -3,24 +3,14 @@ package hoods.com.jetaudio.data.local
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
-import android.util.Size
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import dagger.hilt.android.qualifiers.ApplicationContext
-import hoods.com.jetaudio.R
 import hoods.com.jetaudio.data.local.model.Album
 import hoods.com.jetaudio.data.local.model.Audio
-import java.io.FileNotFoundException
-import java.io.IOException
 import javax.inject.Inject
 
 private const val TAG = "LocalDataSource"
