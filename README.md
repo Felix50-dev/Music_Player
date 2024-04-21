@@ -4,6 +4,11 @@ This is a music player that allows you to play local music files and albums
 
 The App is written using media3, which makes designing music players faster as compared to media2
 
+## Audio app overview 
+The preferred architecture for an audio app is a client/server design. The client is an Activity in your app that includes a MediaBrowser, media controller, and the UI. The server is a MediaBrowserService containing the player and a media session.
+
+Audio activity and BrowserService
+
 # MVVM Architecture
 
 MVVM (Model-View-ViewModel) is a software architectural pattern that facilitates separation of concerns and supports a more modular, maintainable, and testable codebase. It's commonly used in Android development, although it's applicable to other platforms as well.
