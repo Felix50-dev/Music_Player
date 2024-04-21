@@ -9,6 +9,8 @@ The preferred architecture for an audio app is a client/server design. The clien
 
 Audio activity and BrowserService
 
+<img src="app/src/main/java/hoods/com/jetaudio/screenshots/audio-player-architecture.png" width="100" height="300"/>
+
 # MVVM Architecture
 
 MVVM (Model-View-ViewModel) is a software architectural pattern that facilitates separation of concerns and supports a more modular, maintainable, and testable codebase. It's commonly used in Android development, although it's applicable to other platforms as well.
