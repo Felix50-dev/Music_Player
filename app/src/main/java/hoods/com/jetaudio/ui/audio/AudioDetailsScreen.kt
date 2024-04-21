@@ -62,7 +62,7 @@ fun AudioDetailsScreen(
     onStart: () -> Unit
 ) {
     val bitmap: Bitmap = try {
-        context.contentResolver.loadThumbnail(audio.uri.toUri(), Size(60, 60), null)
+        context.contentResolver.loadThumbnail(audio.uri.toUri(), Size(350, 400), null)
     } catch (e: FileNotFoundException) {
         Log.e(TAG, "No image available")
         val drawable =

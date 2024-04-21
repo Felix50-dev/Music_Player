@@ -299,7 +299,8 @@ fun PlayerIconItem(
             .clip(CircleShape)
             .clickable {
                 onClick()
-            },
+            }
+            .size(40.dp),
         contentColor = color,
         color = backgroundColor
     ) {
