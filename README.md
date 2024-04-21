@@ -81,14 +81,8 @@ MVVM (Model-View-ViewModel) is a software architectural pattern that facilitates
 
 ## Screenshots
 
-<img src="app/src/main/java/hoods/com/jetaudio/screenshots/AlbumScreenDarkTheme.jpg" width="300" height="600"/>
+<img src="app/src/main/java/hoods/com/jetaudio/screenshots/AlbumScreenDarkTheme.jpg" width="300" height="600"/> <img src="app/src/main/java/hoods/com/jetaudio/screenshots/AlbumScreenLightTheme.jpg" width="300" height="600"/>
 
-<img src="app/src/main/java/hoods/com/jetaudio/screenshots/AlbumScreenLightTheme.jpg.jpg" width="300" height="600"/>
+<img src="app/src/main/java/hoods/com/jetaudio/screenshots/MainScreenDarkTheme.jpg" width="300" height="600"/> <img src="app/src/main/java/hoods/com/jetaudio/screenshots/MainScreenLightTheme.jpg" width="300" height="600"/>
 
-<img src="app/src/main/java/hoods/com/jetaudio/screenshots/MainScreenDarkTheme.jpg" width="300" height="600"/>
-
-<img src="app/src/main/java/hoods/com/jetaudio/screenshots/MainScreenLightTheme.jpg" width="300" height="600"/>
-
-<img src="app/src/main/java/hoods/com/jetaudio/screenshots/SongDetailsDarkTheme.jpg" width="300" height="600"/>
-
-<img src="app/src/main/java/hoods/com/jetaudio/screenshots/songDetailsLightTheme.jpg" width="300" height="600"/>
+<img src="app/src/main/java/hoods/com/jetaudio/screenshots/SongDetailsDarkTheme.jpg" width="300" height="600"/> <img src="app/src/main/java/hoods/com/jetaudio/screenshots/songDetailsLightTheme.jpg" width="300" height="600"/>
